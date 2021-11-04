@@ -1,0 +1,7 @@
+@echo off
+powershell python D:\Study\2021_Research\animation\experiments\EasyMocap-master/scripts/preprocess/extract_video.py E:\study\dongao --openpose D:\Study\2021\frontier\2\openpose
+powershell python D:\Study\2021_Research\animation\experiments\EasyMocap-master/apps/demo/mvmp.py E:\study\dongao --out E:\study\dongao/output --annot annots --cfg config/exp/mvmp1f.yml --undis --vis_det --vis_repro
+powershell python D:\Study\2021_Research\animation\experiments\EasyMocap-master/apps/demo/auto_track.py E:\study\dongao/output E:\study\dongao/output-track --track3d
+powershell python D:\Study\2021_Research\animation\experiments\EasyMocap-master/apps/demo/smpl_from_keypoints.py E:\study\dongao --skel E:\study\dongao/output-track/keypoints3d --out E:\study\dongao/output-track/smpl --verbose --opts smooth_poses 1e1
+
+pause   

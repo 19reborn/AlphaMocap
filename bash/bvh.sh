@@ -1,0 +1,1 @@
+D:/tool/Blender2.79b/blender.exe -b -t 12 -P scripts/postprocess/convert2bvh.py -- E:\\study\\EasyMocap\\datasets\\test\\output/smpl/ --o  E:\\study\\EasyMocap\\datasets\\test\\bvh_no_smooth

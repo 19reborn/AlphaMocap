@@ -1,0 +1,2 @@
+powershell python D:\Study\2021_Research\animation\experiments\EasyMocap-master/apps/demo/my_mvmp.py E:\study\EasyMocap\datasets\shelf --out E:\study\EasyMocap\datasets\shelf/output --annot annots --cfg config/exp/mvmp1f_ori.yml --undis --vis_det --vis_repro --vis3d --vis_match
+powershell python D:\Study\2021_Research\animation\experiments\EasyMocap-master/apps/demo/smpl_from_keypoints.py E:\study\EasyMocap\datasets\test --skel E:\study\EasyMocap\datasets\test/output/keypoints3d --out E:\study\EasyMocap\datasets\test/output/smpl --verbose --opts smooth_poses 1e1
