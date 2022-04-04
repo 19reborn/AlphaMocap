@@ -42,7 +42,7 @@ def smpl_from_skel(path, sub, out, skel3d, args):
     # keypoints2d = np.stack(keypoints2d)
     # bboxes = np.stack(bboxes)
 
-    image_dir = 'E:\study\EasyMocap\datasets\\Alphapose\images'
+    image_dir = '/home/wangyiming/AlphaMocap/dataset/jhd_1min'
     intri_name = os.path.join(image_dir, '..', 'intri.yml')
     extri_name = os.path.join(image_dir, '..', 'extri.yml')
     if os.path.exists(intri_name) and os.path.exists(extri_name):

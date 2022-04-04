@@ -5,6 +5,8 @@
   @ LastEditTime: 2021-06-25 11:52:49
   @ FilePath: /EasyMocapRelease/apps/demo/mvmp.py
 '''
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 from easymocap.dataset import CONFIG
 from easymocap.dataset import CONFIG
 from easymocap.affinity.affinity import ComposedAffinity
@@ -12,7 +14,6 @@ from easymocap.assignment.associate import simple_associate
 from easymocap.assignment.group import PeopleGroup
 from easymocap.mytools.vis_base import draw3d
 import json
-import os
 import numpy as np
 from easymocap.mytools import Timer
 from tqdm import tqdm
@@ -123,7 +124,6 @@ def mvposev1(dataset, args, cfg):
     dataset.no_img = not (args.vis_det or args.vis_match or args.vis_repro or args.ret_crop)
     start, end = args.start, min(args.end, len(dataset))
     affinity_model = ComposedAffinity(cameras=dataset.cameras, basenames=dataset.cams, cfg=cfg.affinity)
-    start = 107
     group = PeopleGroup(Pall=dataset.Pall, cfg=cfg.group)
     #if args.vis3d:
     #    from easymocap.socket.base_client import BaseSocketClient
@@ -164,6 +164,7 @@ def mvposev1(dataset, args, cfg):
         ## draw 3D image
         if args.vis3d:
             dir = os.path.join(args.path,'output','pose3d',str(nf))
+            os.makedirs(dir, exist_ok = True)
             draw3d(results.results,dir)
         last_3d = results.results
     

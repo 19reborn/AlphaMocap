@@ -11,7 +11,7 @@ dataset:
     CritMinJoints:
       min_joints: 12
     CritBbox:
-      area: 1200
+       area: 1200
 
 affinity:
   svt_py: True
@@ -38,11 +38,11 @@ associate:
     "easymocap.assignment.criterion.CritMinMax":
       max_human_length: 2.4
       min_conf: 0.001
-    "easymocap.assignment.criterion.CritRange":
-      minr: [-25, -25, -0.2]
-      maxr: [35, 13, 2.5]
-      rate_inlier: 0.99
-      min_conf: 0.001
+    #  "easymocap.assignment.criterion.CritRange":
+    #    minr: [-100, -100, -2]
+    #    maxr: [350, 130, 5]
+    #    rate_inlier: 0.99
+    #    min_conf: 0.001
     "easymocap.assignment.criterion.CritWithTorso":
       torso_idx: [1, 8, 2, 5, 9, 12]
       min_conf: 0.3

@@ -110,6 +110,7 @@ def simple_associate(annots, affinity, dimGroups, Pall, group, cfg):
                 if not crit(keypoints3d):
                     flag = False
                     break
+            flag = True
             if flag:            
                 #import pdb
                 #pdb.set_trace()

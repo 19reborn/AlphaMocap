@@ -5,14 +5,15 @@
   @ LastEditTime: 2021-06-25 11:52:49
   @ FilePath: /EasyMocapRelease/apps/demo/mvmp.py
 '''
+import json
+import os
 from easymocap.dataset import CONFIG
 from easymocap.dataset import CONFIG
 from easymocap.affinity.affinity import ComposedAffinity
 from easymocap.assignment.associate import simple_associate
 from easymocap.assignment.group import PeopleGroup
 from easymocap.mytools.vis_base import draw3d
-import json
-import os
+
 import numpy as np
 from easymocap.mytools import Timer
 from tqdm import tqdm

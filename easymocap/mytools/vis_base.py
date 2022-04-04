@@ -341,7 +341,7 @@ def drawSmplrepro(infos, out, frame, images_dir, cameras, sub_vis = None):
     if sub_vis == None:
         sub_vis = range(nviews)
     for view in sub_vis:
-        images[view] = (cv2.imread(join(images_dir,str(view),'%03d.jpg' %frame)))
+        images[view] = (cv2.imread(join(images_dir,f'{view:03}','%06d.jpg' %frame)))
     from ..visualize.renderer import Renderer
     render = Renderer(height=1024, width=1024, faces=None)
     render_results = render.render(infos, cameras, images)

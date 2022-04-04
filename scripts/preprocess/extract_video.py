@@ -36,33 +36,46 @@ def extract_video(videoname, path, start, end, step):
     video.release()
     return base
 
-def extract_2d(openpose, image, sub, keypoints, render, args, mode):
+def extract_2d_alphapose(alphapose, image, keypoints, render, args, sub):
+    skip = False
+    if os.path.exists(join(keypoints,sub)):
+        # check the number of images and keypoints
+        if len(os.listdir(image)) == len(os.listdir(keypoints)):
+            skip = True
+    if not skip:
+        os.makedirs(keypoints, exist_ok=True)
+        cmd = f'python {alphapose}/scripts/demo_inference.py --cfg configs/halpe_26/resnet/256x192_res50_lr1e-3_1x.yaml --checkpoint pretrained_models/halpe26_fast_res50_256x192.pth --indir {image} --format open --outdir {keypoints} --view {sub} --gpu 0'
+        os.chdir(alphapose)
+        os.system(cmd)
+
+
+def extract_2d(openpose, image, keypoints, render, args):
     skip = False
     if os.path.exists(keypoints):
         # check the number of images and keypoints
         if len(os.listdir(image)) == len(os.listdir(keypoints)):
             skip = True
-
     if not skip:
-        if mode=='openpose':
-            os.makedirs(keypoints, exist_ok=True)
-            cmd = 'D:\\Study\\2021\\frontier\\2\\openpose/bin/OpenPoseDemo.exe --image_dir {} --write_json {} --display 0'.format(image, keypoints)
-            if args.highres!=1:
-                cmd = cmd + ' --net_resolution -1x{}'.format(int(16*((368*args.highres)//16)))
-            cmd = cmd + ' --net_resolution -1x{}'.format(320)
-            if args.handface:
-                cmd = cmd + ' --hand --face'
-            if args.render:
-                cmd = cmd + ' --write_images {}'.format(render)
-            else:
-                cmd = cmd + ' --render_pose 0'
-            os.chdir(openpose)
-            os.system(cmd)
+        os.makedirs(keypoints, exist_ok=True)
+        if os.name != 'nt':
+            cmd = './build/examples/openpose/openpose.bin --image_dir {} --write_json {} --display 0'.format(image, keypoints)
         else:
-            os.makedirs(keypoints, exist_ok=True)
-            cmd = 'conda activate alphapose & python E:\study\AlphaPose-master\scripts/demo_inference.py --cfg configs/halpe_26/resnet/256x192_res50_lr1e-3_1x.yaml --checkpoint pretrained_models/halpe26_fast_res50_256x192.pth --indir E:\study\EasyMocap\datasets\Alphapose\images/{}  --format open --outdir E:\study\EasyMocap\datasets\Alphapose\openpose --view {}'.format(sub, sub)
-            os.chdir(openpose)
-            os.system(cmd)            
+            cmd = 'bin\\OpenPoseDemo.exe --image_dir {} --write_json {} --display 0'.format(join(os.getcwd(),image), join(os.getcwd(),keypoints))
+        if args.highres!=1:
+            cmd = cmd + ' --net_resolution -1x{}'.format(int(16*((368*args.highres)//16)))
+        if args.handface:
+            cmd = cmd + ' --hand --face'
+        if args.render:
+            if os.path.exists(join(os.getcwd(),render)):
+                cmd = cmd + ' --write_images {}'.format(join(os.getcwd(),render))
+            else:
+                os.makedirs(join(os.getcwd(),render), exist_ok=True)
+                cmd = cmd + ' --write_images {}'.format(join(os.getcwd(),render))
+        else:
+            cmd = cmd + ' --render_pose 0'
+        os.chdir(openpose)
+        os.system(cmd)
+
 
 import json
 def read_json(path):
@@ -132,9 +145,11 @@ def load_openpose(opname):
         out.append(annot)
     return out
     
-def convert_from_openpose(src, dst, annotdir):
+def convert_from_openpose(path_orig, src, dst, annotdir):
     # convert the 2d pose from openpose
+    os.chdir(path_orig)    
     inputlist = sorted(os.listdir(src))
+
     for inp in tqdm(inputlist, desc='{:10s}'.format(os.path.basename(dst))):
         annots = load_openpose(join(src, inp))
         base = inp.replace('_keypoints.json', '')
@@ -220,16 +235,17 @@ def extract_yolo_hrnet(image_root, annot_root, ext='jpg', use_low=False):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('path', type=str, default=None, help="the path of data")
-    parser.add_argument('--mode', type=str, default='openpose', choices=['openpose', 'alphapose', 'yolo-hrnet'], help="model to extract joints from image")
+    parser.add_argument('path', type=str, help="the path of data")
+    parser.add_argument('--mode', type=str, default='openpose', choices=['openpose','alphapose','yolo-hrnet'], help="model to extract joints from image")
     parser.add_argument('--ext', type=str, default='jpg', choices=['jpg', 'png'], help="image file extension")
     parser.add_argument('--annot', type=str, default='annots', help="sub directory name to store the generated annotation files, default to be annots")
     parser.add_argument('--highres', type=float, default=1)
     parser.add_argument('--handface', action='store_true')
     parser.add_argument('--openpose', type=str, 
-        default='D:/Study/2021/frontier/2/openpose')
+        default='/media/qing/Project/openpose')
     parser.add_argument('--alphapose', type=str, 
-        default='E:\study\AlphaPose-master')
+        default='/home/wangyiming/AlphaPose')
+    parser.add_argument('--use-video', action='store_true')    
     parser.add_argument('--render', action='store_true', 
         help='use to render the openpose 2d')
     parser.add_argument('--no2d', action='store_true',
@@ -245,24 +261,27 @@ if __name__ == "__main__":
     parser.add_argument('--gtbbox', action='store_true',
         help='use the ground-truth bounding box, and hrnet to estimate human pose')
     parser.add_argument('--debug', action='store_true')
+    parser.add_argument('--path_origin', default=os.getcwd())
     args = parser.parse_args()
     mode = args.mode
 
     if os.path.isdir(args.path):
         image_path = join(args.path, 'images')
-        # os.makedirs(image_path, exist_ok=True)
-        # subs_image = sorted(os.listdir(image_path))
-        # subs_videos = sorted(glob(join(args.path, 'videos', '*.mp4')))
-        # if len(subs_videos) > len(subs_image):
-        #     videos = sorted(glob(join(args.path, 'videos', '*.mp4')))
-        #     subs = []
-        #     for video in videos:
-        #         basename = extract_video(video, args.path, start=args.start, end=args.end, step=args.step)
-        #         subs.append(basename)
-        # else:
-        subs = sorted(os.listdir(image_path))
-        # print('cameras: ', ' '.join(subs))
-        
+        os.makedirs(image_path, exist_ok=True)
+        subs_image = sorted(os.listdir(image_path))
+        if args.use_video:
+            subs_videos = sorted(glob(join(args.path, 'videos', '*.mp4')))
+            if len(subs_videos) > len(subs_image):
+                videos = sorted(glob(join(args.path, 'videos', '*.mp4')))
+                subs = []
+                for video in videos:
+                    basename = extract_video(video, args.path, start=args.start, end=args.end, step=args.step)
+                    subs.append(basename)
+            else:
+                subs = sorted(os.listdir(image_path))
+        else:
+            subs = subs_image
+        print('cameras: ', ' '.join(subs))
         if not args.no2d:
             for sub in subs:
                 image_root = join(args.path, 'images', sub)
@@ -273,20 +292,23 @@ if __name__ == "__main__":
                         print('skip ', annot_root)
                         continue
                 if mode == 'openpose':
-                    extract_2d(args.openpose, image_root, sub,
+                    extract_2d(args.openpose, image_root, 
                         join(args.path, 'openpose', sub), 
-                        join(args.path, 'openpose_render', sub), args, mode)
+                        join(args.path, 'openpose_render', sub), args)
                     convert_from_openpose(
+                        path_orig=args.path_origin,
                         src=join(args.path, 'openpose', sub),
                         dst=annot_root,
                         annotdir=args.annot
                     )
-                elif mode == 'alphapose':
-                    extract_2d(args.alphapose, image_root, sub,
-                        join(args.path, 'alphapose', sub), 
-                        join(args.path, 'alphapose_render', sub), args, mode)                    
+                elif mode =='alphapose':                    
+                    extract_2d_alphapose(args.alphapose, image_root, 
+                        join(args.path, 'alphapose'), 
+                        join(args.path, 'alphapose_render'), args, sub)
+
                     convert_from_openpose(
-                        src=join(args.path, 'openpose', sub),
+                        path_orig=args.path_origin,
+                        src=join(args.path, 'alphapose', sub),
                         dst=annot_root,
                         annotdir=args.annot
                     )                    

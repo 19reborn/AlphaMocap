@@ -115,7 +115,7 @@ class Renderer(object):
             else:
                 img = img_.copy()
             #K, R, T = cameras['K'][nv].copy(), cameras['R'][nv], cameras['T'][nv]
-            K, R, T = cameras[str(nv)]['K'].copy(), cameras[str(nv)]['R'], cameras[str(nv)]['T']
+            K, R, T = cameras[f'{nv:03}']['K'].copy(), cameras[f'{nv:03}']['R'], cameras[f'{nv:03}']['T']
             # down scale the image to speed up rendering
             img = cv2.resize(img, None, fx=1/self.down_scale, fy=1/self.down_scale)
             K[:2, :] /= self.down_scale
