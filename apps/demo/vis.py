@@ -1,8 +1,8 @@
 import json
 import os
 from pickle import FALSE
+from easymocap.mytools.cmd_loader import parse_parser
 from networkx.readwrite.pajek import parse_pajek
-from torch.nn.modules.module import T
 from tqdm import tqdm
 from easymocap.mytools.vis_base import draw3d,drawRepro, drawSmpl3d, drawSmplrepro
 from easymocap.mytools.camera_utils import read_camera
@@ -11,16 +11,30 @@ from easymocap.smplmodel import check_keypoints, load_model, select_nf
 from easymocap.dataset import CONFIG
 import numpy as np
 
+import argparse
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
+parser = argparse.ArgumentParser('EasyMocap commond line tools')
+parser.add_argument('--image-path', type=str)
+parser.add_argument('--output-path', type=str)
+parser.add_argument('--draw-3d', action='store_true')
+parser.add_argument('--draw-repro', action='store_true')
+parser.add_argument('--draw-smpl', action='store_true')
+parser.add_argument('--smpl-scale', type=float, default=1.6)
+
+# args = parse_parser(parser)
+args = parser.parse_args()
+image_dir = args.image_path
+out = args.output_path
 #out = 'E:\study\EasyMocap\datasets\Alphapose/output-track-8.11'
-out = 'E:\study\EasyMocap\datasets/test/output'
-image_dir = 'E:\study\EasyMocap\datasets\Alphapose\images'
-#out = 'E:\study\EasyMocap\datasets/neuralbody/output'
+# out = 'E:\study\EasyMocap\datasets/test/output'
+# image_dir = 'E:\study\EasyMocap\datasets\Alphapose\images'
+# out = 'E:\study\EasyMocap\datasets/neuralbody/output'
 #image_dir = 'E:\study\EasyMocap\datasets/neuralbody\images'
 #out = 'E:\study\EasyMocap\datasets\mvmp\output-track'
 #image_dir = 'E:\study\EasyMocap\datasets\mvmp\images'
+
 
 file_path = os.path.join(out,'keypoints3d')
 pose3d_path = os.path.join(out,'pose3d')
@@ -34,10 +48,10 @@ os.makedirs(smpl_3d_path, exist_ok=True)
 sub_vis = [20]
 #sub_vis = None
 frames = range(0,150)
-draw_3d = False
-draw_repro = False
-draw_smpl = True
-draw_smpl_repro = True
+draw_3d = args.draw_3d
+draw_repro = args.draw_repro
+draw_smpl = args.draw_smpl
+# draw_smpl_repro = True
 # 读入相机参数
 intri_name = os.path.join(image_dir, '..', 'intri.yml')
 extri_name = os.path.join(image_dir, '..', 'extri.yml')
@@ -57,6 +71,7 @@ for frame in tqdm(frames, desc='draw'):
     #    results.append(people["keypoints3d"])
     if draw_3d:
         draw3d(data, os.path.join(pose3d_path,str(frame).rjust(6,'0')+'.jpg'))
+        
     if draw_repro:
         drawRepro(data, out, frame, image_dir, cameras, config, sub_vis)
     if draw_smpl:
@@ -77,7 +92,7 @@ for frame in tqdm(frames, desc='draw'):
             params.pop('id')
             vertice = body_model(return_verts=True, return_tensor=False, **params)
             vertices[param['id']] = vertice
-        scale = 1.6
+        scale = args.smpl_scale
         faces = body_model.faces
         render_data = {}
         for pid, data in vertices.items():

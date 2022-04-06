@@ -85,7 +85,6 @@ class CritBbox(BaseCrit):
     def __str__(self) -> str:
         return "remove unnormal bbox"
 
-
 class ComposedFilter:
     def __init__(self, filters, min_conf) -> None:
         self.filters = filters

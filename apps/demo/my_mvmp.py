@@ -5,8 +5,8 @@
   @ LastEditTime: 2021-06-25 11:52:49
   @ FilePath: /EasyMocapRelease/apps/demo/mvmp.py
 '''
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+# import os
+# os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 from easymocap.dataset import CONFIG
 from easymocap.dataset import CONFIG
 from easymocap.affinity.affinity import ComposedAffinity
@@ -17,6 +17,7 @@ import json
 import numpy as np
 from easymocap.mytools import Timer
 from tqdm import tqdm
+import os
 
 def distance_pl(pose2d, pose3d, camera):
 

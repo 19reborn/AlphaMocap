@@ -161,9 +161,15 @@ class LossSmoothBodyMean:
     def smooth(self, kpts_est, **kwargs):
         "smooth body"
         kpts_interp = kpts_est.clone().detach()
-        kpts_interp[1:-1] = (kpts_interp[:-2] + kpts_interp[2:])/2
-        loss = funcl2(kpts_est[1:-1] - kpts_interp[1:-1])
-        return loss/(kpts_est.shape[0] - 2)
+        if kpts_est.shape[0] == 2:
+            loss = funcl2(kpts_est[1]-kpts_est[0])
+        else:
+            kpts_interp[1:-1] = (kpts_interp[:-2] + kpts_interp[2:])/2
+            loss = funcl2(kpts_est[1:-1] - kpts_interp[1:-1])
+        if kpts_est.shape[0] == 2:
+            return loss
+        else:
+            return loss/(kpts_est.shape[0] - 2)
     
     def body(self, kpts_est, **kwargs):
         "smooth body"
@@ -188,11 +194,17 @@ class LossSmoothPoses:
         loss = 0
         for nv in range(self.nViews):
             poses_ = poses[nv*self.nFrames:(nv+1)*self.nFrames, ]
-            # 计算poses插值
-            poses_interp = poses_.clone().detach()
-            poses_interp[1:-1] = (poses_interp[1:-1] + poses_interp[:-2] + poses_interp[2:])/3
-            loss += funcl2(poses_[1:-1] - poses_interp[1:-1])
-        return loss/(self.nFrames-2)/self.nViews
+            if self.nFrames == 2:
+                loss += funcl2(poses_[1] - poses_[0])
+            else:
+                # 计算poses插值
+                poses_interp = poses_.clone().detach()
+                poses_interp[1:-1] = (poses_interp[1:-1] + poses_interp[:-2] + poses_interp[2:])/3
+                loss += funcl2(poses_[1:-1] - poses_interp[1:-1])
+        if self.nFrames == 2:
+            return loss/self.nViews
+        else:
+            return loss/(self.nFrames-2)/self.nViews
     
     def poses(self, poses, **kwargs):
         "smooth body poses"

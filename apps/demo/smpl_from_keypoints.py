@@ -42,7 +42,8 @@ def smpl_from_skel(path, sub, out, skel3d, args):
     # keypoints2d = np.stack(keypoints2d)
     # bboxes = np.stack(bboxes)
 
-    image_dir = '/home/wangyiming/AlphaMocap/dataset/jhd_1min'
+    # image_dir = '/home/wangyiming/AlphaMocap/dataset/jhd_1min'
+    image_dir = os.path.join(args.path, 'images')
     intri_name = os.path.join(image_dir, '..', 'intri.yml')
     extri_name = os.path.join(image_dir, '..', 'extri.yml')
     if os.path.exists(intri_name) and os.path.exists(extri_name):
@@ -152,6 +153,7 @@ def smpl_from_skel(path, sub, out, skel3d, args):
             body_model = load_model(args.gender, model_type=args.model)
 
         for pid, result in results3d.items():
+            print(f'****** optimize_person:{pid}')
             #if pid != 0:
             #    continue
             # kp2ds = []

@@ -83,9 +83,11 @@ def simple_associate(annots, affinity, dimGroups, Pall, group, cfg):
         while len(proposals) > 0:
             proposal = proposals.pop()
             # less than two views
-            min_views = cfg.min_views
             if id == -1:
-                min_views *= 3
+                # min_views *= 3
+                min_views = cfg.new_person_min_views
+            else:
+                min_views = cfg.min_views
             if (proposal != -1).sum() < min_views:
                 continue
             # print('[associate] pop proposal: {}'.format(proposal))
@@ -110,7 +112,7 @@ def simple_associate(annots, affinity, dimGroups, Pall, group, cfg):
                 if not crit(keypoints3d):
                     flag = False
                     break
-            flag = True
+            # flag = True
             if flag:            
                 #import pdb
                 #pdb.set_trace()
