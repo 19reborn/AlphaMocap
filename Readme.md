@@ -9,12 +9,9 @@ An adapted version of [EasyMocap](https://github.com/zju3dv/EasyMocap) for my ow
     <sup>Videos with 42 calibrated and synchronized cameras.<sup/>
     <br>
     <img src="demo/pose3d.gif" width="80%">
-    <br>
-    <sup>reconstruction of 3D skeleton with tracking.<sup/>
-    <br>
     <img src="demo/smpl.gif" width="80%">
     <br>
-    <sup>Fitted SMPL.<sup/>
+    <sup>Reconstruction of 3D skeleton with tracking and fitted SMPL.<sup/>
     <br>
 </div>
 
