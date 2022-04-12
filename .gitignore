@@ -6,6 +6,7 @@ data
 dataset
 bash
 true_bash
+demo/ori_*
 *.sh
 
 

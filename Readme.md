@@ -1,7 +1,20 @@
 # AlphaMocap
-My implementation version of [EasyMocap](https://github.com/zju3dv/EasyMocap). With the use of my implementation version of [AlphaPose](https://github.com/MVIG-SJTU/AlphaPose) and some new tricks, this repo is targeted to achieve human motion capture in crowded scenes. 
+An adapted version of [EasyMocap](https://github.com/zju3dv/EasyMocap) for my own use. With the help of [my adapted version](https://github.com/19reborn/MyAlphaPose) of [AlphaPose](https://github.com/MVIG-SJTU/AlphaPose) and some new tricks, this repo is targeted to achieve human motion capture in crowded scenes. 
 
 <!-- Here supposed to be a demo gif -->
+
+<div align="center">
+    <img src="demo/source.gif" width="80%">
+    <sup>Videos with 42 calibrated and synchronized cameras.<sup/>
+    <br>
+    <img src="demo/pose3d.gif" width="80%">
+    <sup>reconstruction of 3D skeleton with tracking.<sup/>
+    <br>
+    <img src="demo/smpl.gif" width="80%">
+    <sup>Fitted SMPL.<sup/>
+    <br>
+</div>
+
 
 ## Data Formats
 The data is organized as follows:
