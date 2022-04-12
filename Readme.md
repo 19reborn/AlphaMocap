@@ -80,3 +80,6 @@ python apps/demo/my_mvmp.py ${data} --out ${data}/output --annot annots --cfg co
 
 python apps/demo/smpl_from_keypoints.py ${data} --skel ${data}/output/keypoints3d --out ${data}/output/smpl --verbose --opts smooth_poses 1e-1
 ```
+
+## Common Issues
+### pyglet.canvas.xlib.NoSuchDisplayException: Cannot connect to "None"

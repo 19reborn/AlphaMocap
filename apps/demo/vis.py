@@ -45,9 +45,9 @@ os.makedirs(smpl_repro_path, exist_ok=True)
 os.makedirs(smpl_3d_path, exist_ok=True)
 
 
-sub_vis = [20]
+sub_vis = [0]
 #sub_vis = None
-frames = range(0,150)
+frames = range(0,1)
 draw_3d = args.draw_3d
 draw_repro = args.draw_repro
 draw_smpl = args.draw_smpl

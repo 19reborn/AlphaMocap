@@ -165,7 +165,7 @@ def mvposev1(dataset, args, cfg):
         ## draw 3D image
         if args.vis3d:
             dir = os.path.join(args.path,'output','pose3d',str(nf))
-            os.makedirs(dir, exist_ok = True)
+            # os.makedirs(dir, exist_ok = True)
             draw3d(results.results,dir)
         last_3d = results.results
     
